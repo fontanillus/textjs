@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Test de repaso</title>
+    <link rel="stylesheet" href="./css/estilos.css">
+
+</head>
+
+<body>
+    <div class="adorno">
+        <h1>Test de repaso</h1>
+    </div>
+    <div id="preguntas">
+        <!-- Aquí se cargan las preguntas -->
+    </div>
+    <br>
+    <div class="container">
+        <p style="text-align:center;">
+            <span id="contador"></span>
+            <button type="button" onclick="retroceder()">Pregunta Anterior</button>
+            <button type="button" onclick="verificar()">Verificar</button>
+            <button type="button" onclick="avanzar()">Pregunta Siguiente</button>
+            <button type="button" onclick="reiniciar()">Reiniciar el Test</button>
+        </p>
+    </div>
+    <div id="resultado"></div>
+
+    <script src="js/text.js"></script>
+
+    <script>
+
+        let posicion = 0;
+
+        function mostrarPreguntas() {
+            const contenedor = document.getElementById("preguntas");
+            const p = preguntas[posicion];
+
+            // Cambiar el h1 para mostrar la pregunta actual (o lo que quieras)
+            const titulo = document.querySelector("h1");
+
+
+            contenedor.innerHTML = `
+        <p>${p.numpregunta}. ${p.pregunta}</p>
+        <ol type="a">
+            <li><input type="radio" name="resp" id="opcionA" value="A">
+                <label for="opcionA">${p.opcionA}</label>
+            </li>
+            <li><input type="radio" name="resp" id="opcionB" value="B">
+                <label for="opcionB">${p.opcionB}</label>
+            </li>
+            <li><input type="radio" name="resp" id="opcionC" value="C">
+                <label for="opcionC">${p.opcionC}</label>
+            </li>
+            <li><input type="radio" name="resp" id="opcionD" value="D">
+                <label for="opcionD">${p.opcionD}</label>
+            </li>
+        </ol>
+    `;
+
+            document.getElementById("contador").textContent = `Pregunta ${posicion + 1} de ${preguntas.length}`;
+            document.getElementById("resultado").textContent = "";
+
+            if (p.respuesta) {
+                const radio = document.querySelector(`input[value="${p.respuesta}"]`);
+                if (radio) radio.checked = true;
+            }
+        }
+
+
+        function verificar() {
+            const p = preguntas[posicion];
+            const opciones = document.getElementsByName("resp");
+            let seleccion = null;
+            for (const op of opciones) {
+                if (op.checked) {
+                    seleccion = op.value;
+                    break;
+                }
+            }
+            p.respuesta = seleccion;
+
+            console.log(`Respuesta del usuario: ${seleccion}`);
+            console.log(`Respuesta correcta: ${p.correcta}`);
+
+            const resultadoDiv = document.getElementById("resultado");
+            if (seleccion === p.correcta) {
+                resultadoDiv.textContent = "¡Respuesta correcta!";
+                resultadoDiv.style.color = "green";
+            } else {
+                resultadoDiv.textContent = `Respuesta incorrecta. La correcta es opción ${p.correcta}.`;
+                resultadoDiv.style.color = "red";
+            }
+        }
+
+        function avanzar() {
+            if (posicion < preguntas.length - 1) {
+                posicion++;
+                mostrarPreguntas();
+            }
+        }
+
+        function retroceder() {
+            if (posicion > 0) {
+                posicion--;
+                mostrarPreguntas();
+            }
+        }
+
+        function reiniciar() {
+            for (let p of preguntas) {
+                p.respuesta = "";
+            }
+            posicion = 0;
+            mostrarPreguntas();
+            document.getElementById("resultado").textContent = "";
+        }
+
+        // Mostrar la primera pregunta al cargar la página
+        document.addEventListener("DOMContentLoaded", function () {
+            mostrarPreguntas();
+        });
+
+    </script>
