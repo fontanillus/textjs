@@ -23,6 +23,7 @@
             <button type="button" onclick="retroceder()">Pregunta Anterior</button>
             <button type="button" onclick="verificar()">Verificar</button>
             <button type="button" onclick="avanzar()">Pregunta Siguiente</button>
+            <button type="button" onclick="totalPuntos()">Total puntos obtenidos</button>
             <button type="button" onclick="reiniciar()">Reiniciar el Test</button>
         </p>
     </div>
@@ -107,6 +108,18 @@
                 posicion--;
                 mostrarPreguntas();
             }
+        }
+
+        function totalPuntos() {
+            let puntos = 0;
+            for (let p of preguntas) {
+                if (p.respuesta === p.correcta) {
+                    puntos++;
+                }
+            }
+            const resultadoDiv = document.getElementById("resultado");
+            resultadoDiv.textContent = `Puntos obtenidos: ${puntos} de ${preguntas.length}`;
+            resultadoDiv.style.color = "blue";
         }
 
         function reiniciar() {
